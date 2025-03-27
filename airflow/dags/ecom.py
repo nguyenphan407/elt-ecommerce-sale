@@ -13,10 +13,10 @@ with DAG(
     start_date=datetime(2025, 3, 22),
     catchup=False,
 ) as dag:
-    # ingest_data= PythonOperator(
-    #     task_id="ingest_data",
-    #     python_callable=_ingest_raw_fact
-    # )
+    ingest_data= PythonOperator(
+        task_id="ingest_data",
+        python_callable=_ingest_raw_fact
+    )
 
     dbt_transform = DockerOperator(
         task_id='dbt_run',
