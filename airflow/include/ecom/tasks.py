@@ -73,4 +73,3 @@ def _ingest_raw_fact() -> None:
 
 
 
-

@@ -1,6 +1,50 @@
 version: '3.8'
 
 services:
+  datalake:
+    container_name: datalake
+    image: postgres:15
+    networks:
+      - elt_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $POSTGRES_DB -U $POSTGRES_USER"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 15s
+    environment:
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+    ports:
+      - "5432:5432"
+
+#  ingestor:
+#    build:
+#      context: .
+#      dockerfile: ./ingestor/Dockerfile
+#      args:
+#        POSTGRES_USER: $POSTGRES_USER
+#        POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+#    env_file:
+#      - .env
+#    volumes:
+#      - ./data/:/data
+#    networks:
+#      - elt_network
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+
+  postgres:
+    image: postgres:15
+    networks:
+      - elt_network
+    environment:
+      POSTGRES_DB: airflow
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+
   init-airflow:
     image: apache/airflow:latest
     depends_on:
@@ -10,13 +54,13 @@ services:
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
     command: >
-      bash -c "airflow db init && 
+      bash -c "airflow db init &&
                airflow users create --username airflow --password password --firstname Nguyen --lastname Phan --role Admin --email admin@example.com"
 
   webserver:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: airflow/Dockerfile
     depends_on:
       - postgres
     networks:
@@ -24,22 +68,26 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - ./airflow/dags:/opt/airflow/dags
-      - ./elt_script:/opt/airflow/elt
-      - ./custom_postgres:/opt/dbt
+      - ./airflow:/opt/airflow
+      - ./ecom_dbt:/opt/dbt
       - ~/.dbt:/root/.dbt
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/root/data
     environment:
       - LOAD_EX=n
       - EXECUTOR=Local
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-      - AIRFLOW_CONN_DESTINATION_POSTGRES=postgres://postgres:secret@destination_postgres:5434/destination_db
+      - AIRFLOW_CONN_DESTINATION_POSTGRES=postgres://postgres:secret@datalake:5432/ecom
       - AIRFLOW__CORE__FERNET_KEY=gueRtBlpRqLAvIR9AaDyY3N_lvKAC0P-epfv9Adkdp0=
       - AIRFLOW__WEBSERVER__DEFAULT_USER_USERNAME=airflow
       - AIRFLOW__WEBSERVER__DEFAULT_USER_PASSWORD=password
       - AIRFLOW_WWW_USER_USERNAME=airflow
       - AIRFLOW_WWW_USER_PASSWORD=password
       - AIRFLOW__WEBSERVER__SECRET_KEY=secret
+      - POSTGRES_HOST=$POSTGRES_HOST
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
     ports:
       - "8080:8080"
     command: webserver
@@ -47,7 +95,7 @@ services:
   scheduler:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: airflow/Dockerfile
     depends_on:
       - postgres
     networks:
@@ -55,18 +103,42 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - ./airflow/dags:/opt/airflow/dags
-      - ./elt_script:/opt/airflow/elt
-      - ./custom_postgres:/opt/dbt
+      - ./airflow:/opt/airflow
+      - ./ecom_dbt:/opt/dbt
       - ~/.dbt:/root/.dbt
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/root/data
     environment:
       - LOAD_EX=n
       - EXECUTOR=Local
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-      - AIRFLOW_CONN_DESTINATION_POSTGRES=postgres://postgres:secret@destination_postgres:5434/destination_db
+      - AIRFLOW_CONN_DESTINATION_POSTGRES=postgres://postgres:secret@datalake:5432/ecom
       - AIRFLOW__CORE__FERNET_KEY=gueRtBlpRqLAvIR9AaDyY3N_lvKAC0P-epfv9Adkdp0=
       - AIRFLOW__WEBSERVER__SECRET_KEY=secret
       - AIRFLOW_WWW_USER_USERNAME=airflow
       - AIRFLOW_WWW_USER_PASSWORD=password
+      - POSTGRES_HOST=$POSTGRES_HOST
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
     command: scheduler
+
+  superset:
+    build:
+      context: ./superset
+      dockerfile: Dockerfile
+    container_name: superset
+    environment:
+      SUPERSET_ADMIN: $SUPERSET_ADMIN
+      SUPERSET_PASSWORD: $SUPERSET_PASSWORD
+      SUPERSET_SECRET_KEY: $SUPERSET_SECRET_KEY
+    ports:
+      - '8088:8088'
+    depends_on:
+      datalake:
+        condition: service_healthy
+    networks:
+      - elt_network
+networks:
+    elt_network:
+        driver: bridge
