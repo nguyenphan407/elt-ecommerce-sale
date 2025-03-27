@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: fact
+    description: "The raw fact table containing detailed order information."
+    columns:
+      - name: idx
+        description: "Index column, potentially serving as the primary key."
+        tests:
+          - not_null
+      - name: order_id
+        description: "The unique identifier for an order."
+        tests:
+          - not_null
+      - name: order_date
+        description: "The date the order was placed."
+        tests:
+          - not_null
+      - name: status
+        description: "The status of the order."
+      - name: fulfilment
+        description: "The fulfillment status of the order."
+      - name: sales_channel
+        description: "The sales channel through which the order was made."
+      - name: ship_service_level
+        description: "The shipping service level."
+      - name: style
+        description: "The style or model of the product."
+      - name: sku
+        description: "The Stock Keeping Unit (SKU) identifier for the product."
+      - name: category
+        description: "The product category."
+      - name: size
+        description: "The size of the product."
+      - name: asin
+        description: "The Amazon Standard Identification Number (ASIN) of the product."
+      - name: courier_status
+        description: "The status of the courier or shipping service."
+      - name: qty
+        description: "The quantity of products in the order."
+        tests:
+          - not_null
+      - name: currency
+        description: "The currency used in the order."
+      - name: amount
+        description: "The monetary amount of the order (DECIMAL(10,2))."
+      - name: ship_city
+        description: "The city where the order is shipped."
+      - name: ship_state
+        description: "The state or region for shipping."
+      - name: ship_postal_code
+        description: "The postal code for shipping."
+      - name: ship_country
+        description: "The country where the order is shipped."
+      - name: promotion_ids
+        description: "The promotion IDs applied to the order."
+      - name: b2b
+        description: "Indicator whether the order is B2B (business-to-business)."
+      - name: fulfilled_by
+        description: "The entity or service fulfilling the order."

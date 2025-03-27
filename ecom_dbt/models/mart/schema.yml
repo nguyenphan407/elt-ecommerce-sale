@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: insight_category_revenue
+    description: "Revenue for each category"
+    columns:
+      - name: category
+        description: "name of category"
+      - name: revenue
+        description: "revenue"
+      - name: run_date
+        description: "date of the report"
+  - name: most_purchased_customer
+    description: ""
+    columns:
+      - name: city
+        description: "city"
+      - name: total_sales
+        description: "total of a city"
+  - name: insight_items_sale
+    description: ""
+    columns:
+      - name: sku
+        description: "sku of product"
+      - name: qty
+        description: "sell quantity of product"
+      - name: total_sales
+        description: "total sales"
+      - name: run_date
+        description: "running query date"
+  - name: orders_over_time
+    description: ""
+    columns:
+      - name: year
+        description: ""
+      - name: month
+        description: ""
+      - name: total_orders
+        description: ""
+      - name: total_revenue
+        description: ""

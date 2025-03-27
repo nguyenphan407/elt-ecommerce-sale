@@ -4,7 +4,7 @@
 # name or the intended use of these models
 name: 'ecom_dbt'
 version: '1.0.0'
-
+config-version: 2
 # This setting configures which "profile" dbt uses for this project.
 profile: 'ecom_dbt'
 

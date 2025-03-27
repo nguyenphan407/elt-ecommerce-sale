@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: ecom
+    description: "Postgres source model"
+    database: ecom
+    schema: public
+    tables:
+      - name: raw_fact
+        description: "Raw fact table"

@@ -1,0 +1,81 @@
+version: 2
+
+models:
+  - name: dim_time
+    description: "Dimension table for time details."
+    columns:
+      - name: order_date
+        description: "Order date."
+        tests:
+          - not_null
+          - unique
+      - name: year
+        description: "Year extracted from order_date."
+      - name: quarter
+        description: "Quarter extracted from order_date."
+      - name: month
+        description: "Month extracted from order_date."
+      - name: day
+        description: "Day extracted from order_date."
+
+  - name: dim_product
+    description: "Dimension table for product details."
+    columns:
+      - name: sku
+        description: "Product SKU."
+        tests:
+          - not_null
+          - unique
+      - name: style
+        description: "Product style."
+      - name: category
+        description: "Product category."
+      - name: size
+        description: "Product size."
+      - name: asin
+        description: "Product ASIN."
+
+  - name: dim_location
+    description: "Dimension table for shipping location details."
+    columns:
+      - name: ship_postal_code
+        description: "Postal code for shipping."
+        tests:
+          - not_null
+          - unique
+      - name: ship_city
+        description: "City where the order is shipped."
+      - name: ship_state
+        description: "State or region for shipping."
+      - name: ship_country
+        description: "Country for shipping."
+
+  - name: dim_channel
+    description: "Dimension table for sales channel details."
+    columns:
+      - name: sales_channel
+        description: "Sales channel through which the order was placed."
+        tests:
+          - not_null
+          - unique
+      - name: ship_service_level
+        description: "Shipping service level."
+      - name: promotion_ids
+        description: "Promotion identifiers applied to the order."
+
+  - name: dim_fulfillment
+    description: "Dimension table for fulfillment details."
+    columns:
+      - name: status
+        description: "Order status."
+        tests:
+          - not_null
+          - unique
+      - name: fulfilment
+        description: "Fulfillment status."
+      - name: courier_status
+        description: "Courier status."
+      - name: b2b
+        description: "Flag indicating if the order is B2B."
+      - name: fulfilled_by
+        description: "Entity responsible for fulfilling the order."

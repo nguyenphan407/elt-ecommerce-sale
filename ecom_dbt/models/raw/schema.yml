@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: raw_fact
+    description: "The raw_fact table contains detailed order information."
+    columns:
+      - name: idx
+        description: "Index column (could be used as a primary key if auto-incremented)."
+        tests:
+          - not_null
+      - name: order_id
+        description: "The unique identifier for each order."
+        tests:
+          - not_null
+      - name: order_date
+        description: "The date when the order was placed."
+        tests:
+          - not_null
+      - name: status
+        description: "The current status of the order."
+      - name: fulfilment
+        description: "The fulfillment status of the order."
+      - name: sales_channel
+        description: "The sales channel through which the order was placed."
+      - name: ship_service_level
+        description: "The shipping service level used for the order."
+      - name: style
+        description: "The style or design of the product."
+      - name: sku
+        description: "The Stock Keeping Unit identifier for the product."
+      - name: category
+        description: "The category of the product."
+      - name: size
+        description: "The size of the product."
+      - name: asin
+        description: "The Amazon Standard Identification Number of the product."
+      - name: courier_status
+        description: "The status of the courier handling the order."
+      - name: qty
+        description: "The quantity of items in the order."
+        tests:
+          - not_null
+      - name: currency
+        description: "The currency in which the order amount is specified."
+      - name: amount
+        description: "The order amount, stored as a DECIMAL(10,2)."
+      - name: ship_city
+        description: "The city to which the order is shipped."
+      - name: ship_state
+        description: "The state or region for shipping."
+      - name: ship_postal_code
+        description: "The postal code for the shipping address."
+      - name: ship_country
+        description: "The country for the shipping address."
+      - name: promotion_ids
+        description: "The promotion identifiers applied to the order."
+      - name: b2b
+        description: "A boolean flag indicating if the order is a B2B transaction."
+      - name: fulfilled_by
+        description: "The party responsible for fulfilling the order."
