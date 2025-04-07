@@ -3,3 +3,4 @@ polars
 structlog
 apache-airflow-providers-docker
 docker
+fuzzywuzzy

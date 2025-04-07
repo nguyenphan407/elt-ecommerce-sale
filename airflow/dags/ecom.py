@@ -5,7 +5,7 @@ from airflow.operators.bash import BashOperator
 from docker.types import Mount
 from datetime import datetime
 
-from include.ecom.tasks import _ingest_raw_fact
+from include.ecom.tasks import _ingest_raw_fact, _clean_data, _write_to_dw
 
 with DAG(
     dag_id="ecom",
@@ -16,6 +16,22 @@ with DAG(
     ingest_data= PythonOperator(
         task_id="ingest_data",
         python_callable=_ingest_raw_fact
+    )
+
+    clean_data = PythonOperator(
+        task_id="clean_data",
+        python_callable=_clean_data,
+        op_kwargs = {
+            "df": "{{ task_instance.xcom_pull(task_ids='ingest_data', key='return_value') }}"
+        }
+    )
+
+    write_to_dw = PythonOperator(
+        task_id="write_to_dw",
+        python_callable=_write_to_dw,
+        op_kwargs = {
+            "df": "{{ task_instance.xcom_pull(task_ids='clean_data') }}"
+        }
     )
 
     dbt_transform = DockerOperator(
@@ -41,4 +57,4 @@ with DAG(
         ]
     )
 
-    ingest_data >> dbt_transform
+    ingest_data >> clean_data >> write_to_dw >> dbt_transform

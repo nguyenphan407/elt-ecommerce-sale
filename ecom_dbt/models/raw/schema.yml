@@ -58,3 +58,5 @@ models:
         description: "A boolean flag indicating if the order is a B2B transaction."
       - name: fulfilled_by
         description: "The party responsible for fulfilling the order."
+      - name: Code
+        description: "ISO code."

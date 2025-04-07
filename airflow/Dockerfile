@@ -7,7 +7,8 @@ USER airflow
 RUN pip install apache-airflow-providers-docker \
     && pip install polars \
     && pip install psycopg2-binary \
-    && pip install structlog
+    && pip install structlog \
+    && pip install rapidfuzz
 #    && pip install dbt-airflow \
 #    && pip install dbt \
 #	&& pip install dbt-core \

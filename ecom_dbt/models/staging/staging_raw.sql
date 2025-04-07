@@ -23,5 +23,6 @@ select
     ship_country,
     promotion_ids,
     b2b,
-    fulfilled_by
+    fulfilled_by,
+    Code
 from {{ ref('raw_fact') }}

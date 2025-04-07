@@ -49,6 +49,8 @@ models:
         description: "State or region for shipping."
       - name: ship_country
         description: "Country for shipping."
+      - name: Code
+        description: "ISO code for the location."
 
   - name: dim_channel
     description: "Dimension table for sales channel details."
