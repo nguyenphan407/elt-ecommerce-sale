@@ -71,3 +71,4 @@ To set up and run the **E-Commerce Sales Report** project locally, follow these 
    - Check the PostgreSQL database to ensure data is ingested and transformed.  
    - Explore the Superset dashboard to visualize sales insights and generate reports.
 <img width="1427" alt="Ảnh màn hình 2025-04-06 lúc 00 22 23" src="https://github.com/user-attachments/assets/61cc218b-4f41-4328-979b-179fb6fbc773" />
+<img width="1438" alt="Ảnh màn hình 2025-04-07 lúc 19 21 26" src="https://github.com/user-attachments/assets/eac83738-9fae-4854-9a08-82328a505d4d" />
